@@ -1,34 +1,58 @@
+/* eslint-disable no-unused-vars */
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+
+const courses = [
+  {
+    id: 1,
+    name: "HTML, CSS"
+  },
+  {
+    id: 2,
+    name: "JavaScript"
+  },
+  {
+    id: 3,
+    name: "ReactJS"
+  }
+]
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [checked, setChecked] = useState([]);
+
+  const handleCheck = (id) => {
+    setChecked(prev => {
+      const isChecked = checked?.includes(id)
+
+      if (isChecked) {
+        // Unchecked
+        return checked.filter(item => item !== id)
+      } else {
+        return [...prev, id]
+      }
+    });
+  }
+
+  const handleSubmit = () => {
+    // Call API
+    console.log({ids: checked});
+  }
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank" rel="noreferrer">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank" rel="noreferrer">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <div style={{ padding: '32px' }}>
+      {
+        courses.map(course => (
+          <div key={course.id}>
+            <input 
+              type="checkbox"
+              checked={checked?.includes(course.id)}
+              onChange={() => handleCheck(course.id)}
+            />
+            {course.name}
+          </div>
+        ))
+      }
+      <button onClick={handleSubmit}>Lấy phần thưởng</button>
+    </div>
   )
 }
 
