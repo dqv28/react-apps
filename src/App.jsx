@@ -1,57 +1,46 @@
 /* eslint-disable no-unused-vars */
-import { useState } from 'react'
-
-const courses = [
-  {
-    id: 1,
-    name: "HTML, CSS"
-  },
-  {
-    id: 2,
-    name: "JavaScript"
-  },
-  {
-    id: 3,
-    name: "ReactJS"
-  }
-]
+import { useRef, useState } from 'react'
 
 function App() {
-  const [checked, setChecked] = useState([]);
+  const [jobs, setJobs] = useState(() => {
+    const storageJobs = JSON.parse(localStorage.getItem('jobs'))
 
-  const handleCheck = (id) => {
-    setChecked(prev => {
-      const isChecked = checked?.includes(id)
-
-      if (isChecked) {
-        // Unchecked
-        return checked.filter(item => item !== id)
-      } else {
-        return [...prev, id]
-      }
-    });
-  }
+    return storageJobs
+  })
+  const [job, setJob] = useState('')
+  const inputRef = useRef()
 
   const handleSubmit = () => {
-    // Call API
-    console.log({ids: checked});
+    setJobs(prev => {
+      const newJobs = [...prev, job]
+
+      const jsonJobs = JSON.stringify(newJobs)
+      localStorage.setItem("jobs", jsonJobs)
+
+      return newJobs
+    })
+    setJob('')
+    inputRef.current.focus()
   }
+  
 
   return (
     <div style={{ padding: '32px' }}>
-      {
-        courses.map(course => (
-          <div key={course.id}>
-            <input 
-              type="checkbox"
-              checked={checked?.includes(course.id)}
-              onChange={() => handleCheck(course.id)}
-            />
-            {course.name}
-          </div>
-        ))
-      }
-      <button onClick={handleSubmit}>Lấy phần thưởng</button>
+      <input 
+        value={job} 
+        ref={inputRef}
+        onChange={(e) => setJob(e.target.value)} 
+      />
+      <button onClick={handleSubmit}>Add</button>
+
+      <ul>
+        {
+          jobs.map((job, index) => (
+            <li key={index}>{job}</li>
+
+          ))
+        }
+      </ul>
     </div>
   )
 }
