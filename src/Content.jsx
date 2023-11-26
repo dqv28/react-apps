@@ -2,21 +2,38 @@
 import { useEffect, useState } from "react"
 
 function Content() {
-    const [countdown, setCountdown] = useState(180)
+    const [avatar, setAvatar] = useState(180)
 
     useEffect(() => {
 
-        const timeId = setInterval(() => {
-            setCountdown(prevState => prevState - 1);
-        }, 1000)
+        return () => {
+            avatar && URL.revokeObjectURL(avatar.preview)
+        }
 
-        return () => clearInterval(timeId)
+    }, [avatar])
 
-    }, [])
+    const handlePreviewAvatar = (e) => {
+        const file = e.target.files[0]
+
+        file.preview = URL.createObjectURL(file)
+        setAvatar(file)
+
+        // Xử lý khi chọn nhiều ảnh giống nhau
+        e.target.value = null
+    }
 
     return (
         <>
-            <h1>{countdown}</h1>
+            <input 
+                type="file" 
+                onChange={handlePreviewAvatar}
+            />
+
+            <img
+                src={avatar && avatar.preview}
+                alt=""
+                width="80%"
+            />
         </>
     )
 }
