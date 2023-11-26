@@ -6,6 +6,7 @@ const tabs = ['posts', 'comments', 'albums']
 function Content() {
     const [posts, setPosts] = useState([])
     const [type, setType] = useState('posts')
+    const [showGoToTop, setShowGoToTop] = useState(false)
 
     // 1. UseEffect(callback)
     // 2. UseEffect(callback, [])
@@ -18,6 +19,20 @@ function Content() {
             })
     }, [type])
 
+    useEffect(() => {
+
+        const handleScroll = () => {
+            setShowGoToTop(window.scrollY >= 200)
+        }
+
+        window.addEventListener('scroll', handleScroll)
+
+        // Cleanup function
+        return () => {
+            window.removeEventListener('scroll', handleScroll)
+        }
+
+    }, [])
 
     return (
         <>
@@ -42,6 +57,18 @@ function Content() {
                     ))
                 }
             </ul>
+
+            {
+                showGoToTop && 
+                <button
+                    onClick={() => window.scrollTo(0, 0)}
+                    style={{
+                        position: "fixed",
+                        right: "20px",
+                        bottom: "20px",
+                    }}
+                >Go to top</button>
+            }
         </>
     )
 }
